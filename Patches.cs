@@ -10,13 +10,14 @@ namespace TLDQOL_Windproof
 {
     class Patches
     {
-        [HarmonyPatch(typeof(GameManager),"Awake")]
-
-        internal class GameManager_Awake
+        [HarmonyPatch(typeof(PlayerMovement), "GetWindMovementMultiplier")]
+        internal class Patch_WindReduction
         {
-            private static void Postfix()
+            private static void Postfix(ref float __result)
             {
-                MelonLoader.MelonLogger.Log("Hello World");
+                float windproofness = UnityEngine.Mathf.Clamp(GameManager.GetPlayerManagerComponent().m_WindproofBonusFromClothing / 16, 0, 1);
+                __result = 1 + (1 - windproofness) * (1 - __result);
+
             }
         }
     }
